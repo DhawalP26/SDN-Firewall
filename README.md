@@ -22,6 +22,11 @@ The controller uses OpenFlow match-action rules to inspect packet headers and de
 - Allow traffic between h1 and h2
 - Block traffic from h1 to h3
 
+## Performance Analysis (iperf)
+
+- h1 → h2: Successful throughput observed
+- h1 → h3: No connection / blocked due to firewall rules
+
 ## Steps to Run
 
 ### 1. Start Controller: python3 pox.py firewall
@@ -41,3 +46,17 @@ The controller uses OpenFlow match-action rules to inspect packet headers and de
 
 ## Conclusion
 This project demonstrates how SDN enables dynamic traffic control using centralized controllers and programmable rules.
+
+## Screenshots
+
+### Controller Running
+![Controller](https://github.com/user-attachments/assets/8fb11ee4-7263-406b-a454-41bc1c9e12dd)
+
+### Mininet Topology {Allowed Traffic (h1 → h2) and Blocked Traffic (h1 → h3)}
+![Topology](https://github.com/user-attachments/assets/82caaadf-fbc7-4729-b90a-75c9782eb20e)
+
+### pingall
+![pingall](https://github.com/user-attachments/assets/febd6c58-fb06-4184-84f7-43e8e3268e49)
+
+### iperf
+![iperf](https://github.com/user-attachments/assets/ef87652a-de6e-4cc9-847b-5cd0ddde4398)
