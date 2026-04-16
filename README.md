@@ -1,31 +1,43 @@
-  GNU nano 7.2                                                                    firewall.py
-from pox.core import core
-import pox.openflow.libopenflow_01 as of
-from pox.lib.packet import ipv4
+# SDN-Based Firewall using Mininet and POX
 
-log = core.getLogger()
+## Objective
+To implement an SDN-based firewall using Mininet and POX controller that demonstrates rule-based packet filtering.
 
-def _handle_PacketIn(event):
-    packet = event.parsed
+## Tools Used
+- Mininet
+- POX Controller
+- OpenFlow Protocol
 
-    ip_packet = packet.find('ipv4')
+## Topology
+- 1 Switch (s1)
+- 3 Hosts (h1, h2, h3)
+- 1 Controller (POX)
 
-    if ip_packet:
-        src = str(ip_packet.srcip)
-        dst = str(ip_packet.dstip)
+## Working
+The controller listens for packet_in events and applies firewall rules based on IP addresses.  
+If a rule matches, the packet is dropped; otherwise, it is forwarded.
+The controller uses OpenFlow match-action rules to inspect packet headers and decide whether to drop or forward packets dynamically.
 
-        # 🚫 BLOCK: h1 → h3
-        if src == "10.0.0.1" and dst == "10.0.0.3":
-            log.info("Blocked %s -> %s", src, dst)
-            return
+## Firewall Rules
+- Allow traffic between h1 and h2
+- Block traffic from h1 to h3
 
-    # ✅ ALLOW (flood)
-    msg = of.ofp_packet_out()
-    msg.data = event.ofp
-    msg.actions.append(of.ofp_action_output(port=of.OFPP_FLOOD))
-    event.connection.send(msg)
+## Steps to Run
 
-def launch():
-    core.openflow.addListenerByName("PacketIn", _handle_PacketIn)
-    log.info("Firewall Loaded")
+### 1. Start Controller: python3 pox.py firewall
+### 2. Start Mininet: sudo mn --topo single,3 --controller=remote,ip=127.0.0.1,port=6633
+### 3. Test: 
+  h1 ping h2 # Allowed
+  h1 ping h3 # Blocked
 
+## Expected Output
+- h1 ↔ h2: Successful communication
+- h1 → h3: Packet loss (blocked)
+
+## Results
+- Selective packet filtering achieved
+- Firewall rules enforced correctly
+- Network behavior verified using ping and pingall
+
+## Conclusion
+This project demonstrates how SDN enables dynamic traffic control using centralized controllers and programmable rules.
